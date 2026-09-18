@@ -10,7 +10,7 @@
 
 | Name             | GitHub Handle | Contribution                                                             |
 |------------------|---------------|--------------------------------------------------------------------------|
-| Valeria Olguin   | @vyaya_       | Data exploration, Data Cleaning                                         |
+| Valeria Olguin   | @v-yaya       | Data exploration, Data Cleaning                                          |
 | Jordan Ramirez   | @jramirez     | Data collection, exploratory data analysis (EDA), dataset documentation  |
 | Amina Hassan     | @aminahassan  | Data preprocessing, feature engineering, data validation                 |
 | Priya Mehta      | @pmehta       | Model selection, hyperparameter tuning, model training and optimization  |
