@@ -51,7 +51,7 @@ The stretch goal will be to provided recommended actions based on the supply cha
 Use these milestones to guide your work. Your team will create a GitHub Projects board to track tasks within each milestone. 
 | Month | Milestone | Key Activities | 
 |-------|-----------|----------------| 
-| September | Working ML Model | [TBD] | 
+| September | Working ML Model | 9/30 | 
 | October | Fine-tuned ML Model | [TBD] | 
 | November | Robust Working Model, should be able to work for real time scenarios. Predict the next supply chain disruptions. | [TBD] | 
 
