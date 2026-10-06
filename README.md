@@ -13,6 +13,7 @@
 | Valeria Olguin   | @v-yaya       | Data exploration, Data Cleaning                                          |
 | Chelsea Romero   | @ChelseaRomero| Data cleaning, 
 | Amina Hassan     | @aminahassan  | Data preprocessing, feature engineering, data validation                 |
+| Jacky Lin    | @lyunljl  | Data preprocessing, feature engineering, data validation                 |
 | Priya Mehta      | @pmehta       | Model selection, hyperparameter tuning, model training and optimization  |
 | Chris Park       | @chrispark    | Model evaluation, performance analysis, results interpretation           |
 | Renee Ngai       | @reneengai126 | Model evaluation, performance analysis, model fine-tuning               |     
