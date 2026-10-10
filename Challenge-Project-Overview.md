@@ -52,7 +52,7 @@ Use these milestones to guide your work. Your team will create a GitHub Projects
 | Month | Milestone | Key Activities | 
 |-------|-----------|----------------| 
 | September | Working ML Model | 9/30 | 
-| October | Fine-tuned ML Model | [TBD] | 
+| October | Fine-tuned ML Model | 10/31 | 
 | November | Robust Working Model, should be able to work for real time scenarios. Predict the next supply chain disruptions. | [TBD] | 
 
 ---
