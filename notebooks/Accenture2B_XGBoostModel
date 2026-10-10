@@ -1,0 +1,220 @@
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+from xgboost import XGBClassifier
+
+from sklearn.model_selection import (
+    train_test_split,
+    StratifiedKFold,
+    GridSearchCV
+)
+
+from sklearn.metrics import (
+    mean_squared_error,
+    roc_auc_score,
+    roc_curve,
+    classification_report,
+    confusion_matrix
+)
+
+df = pd.read_csv(r"C:\Users\bomshin\Downloads\model_ready_dataset.csv")
+
+df.head()
+
+
+# Target variable
+target = "target_disrupted_next_week"
+
+# Separate predictors and target
+X = df.drop(columns=[target])
+y = df[target]
+
+print("Dataset shape:", df.shape)
+
+print("\nTarget distribution:")
+print(y.value_counts())
+
+print("\nTarget proportions:")
+print(y.value_counts(normalize=True))
+
+print("\nNon-numeric columns:")
+print(X.select_dtypes(exclude=np.number).columns.tolist())
+
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.25,
+    random_state=42,
+    stratify=y
+)
+
+print("Training observations:", X_train.shape[0])
+print("Testing observations:", X_test.shape[0])
+
+
+xgb_model = XGBClassifier(
+    objective="binary:logistic",
+    eval_metric="logloss",
+    random_state=42,
+    n_jobs=-1
+)
+
+
+cv = StratifiedKFold(
+    n_splits=5,
+    shuffle=True,
+    random_state=42
+)
+
+
+param_grid = {
+    "n_estimators": [100, 200],
+    "max_depth": [3, 5],
+    "learning_rate": [0.03, 0.1],
+    "subsample": [0.8, 1.0],
+    "colsample_bytree": [0.8, 1.0]
+}
+
+
+grid_search = GridSearchCV(
+    estimator=xgb_model,
+    param_grid=param_grid,
+    cv=cv,
+    scoring="roc_auc",
+    n_jobs=-1,
+    verbose=1,
+    return_train_score=True
+)
+
+grid_search.fit(X_train, y_train)
+
+print("Best parameters:")
+print(grid_search.best_params_)
+
+print("\nBest cross-validation ROC-AUC:")
+print(grid_search.best_score_)
+
+
+best_xgb = grid_search.best_estimator_
+
+# Predict probabilities for class 1
+y_train_prob = best_xgb.predict_proba(X_train)[:, 1]
+y_test_prob = best_xgb.predict_proba(X_test)[:, 1]
+
+# Classification predictions
+y_train_pred = best_xgb.predict(X_train)
+y_test_pred = best_xgb.predict(X_test)
+
+
+train_mse = mean_squared_error(y_train, y_train_prob)
+test_mse = mean_squared_error(y_test, y_test_prob)
+
+print("XGBoost MODEL PERFORMANCE")
+
+print(f"In-sample MSE:      {train_mse:.6f}")
+print(f"Out-of-sample MSE:  {test_mse:.6f}")
+
+
+train_auc = roc_auc_score(y_train, y_train_prob)
+test_auc = roc_auc_score(y_test, y_test_prob)
+
+print(f"In-sample ROC-AUC:      {train_auc:.6f}")
+print(f"Out-of-sample ROC-AUC:  {test_auc:.6f}")
+
+
+print("Confusion Matrix - Test Set")
+print(confusion_matrix(y_test, y_test_pred))
+
+print("\nClassification Report - Test Set")
+print(classification_report(y_test, y_test_pred))
+
+
+fpr_train, tpr_train, _ = roc_curve(
+    y_train,
+    y_train_prob
+)
+
+fpr_test, tpr_test, _ = roc_curve(
+    y_test,
+    y_test_prob
+)
+
+plt.figure(figsize=(8, 6))
+
+plt.plot(
+    fpr_train,
+    tpr_train,
+    label=f"In-Sample ROC-AUC = {train_auc:.3f}"
+)
+
+plt.plot(
+    fpr_test,
+    tpr_test,
+    label=f"Out-of-Sample ROC-AUC = {test_auc:.3f}"
+)
+
+plt.plot(
+    [0, 1],
+    [0, 1],
+    linestyle="--",
+    label="Random Classifier"
+)
+
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("XGBoost ROC Curves")
+plt.legend()
+plt.grid(alpha=0.3)
+plt.show()
+
+
+plt.figure(figsize=(7, 5))
+
+plt.bar(
+    ["In-Sample MSE", "Out-of-Sample MSE"],
+    [train_mse, test_mse]
+)
+
+plt.ylabel("Mean Squared Error")
+plt.title("XGBoost: In-Sample vs. Out-of-Sample MSE")
+
+plt.show()
+
+
+feature_importance = pd.DataFrame({
+    "Feature": X_train.columns,
+    "Importance": best_xgb.feature_importances_
+})
+
+feature_importance = feature_importance.sort_values(
+    "Importance",
+    ascending=False
+)
+
+print("\nTop 20 Most Important Features:")
+print(feature_importance.head(20))
+
+
+top_features = feature_importance.head(20).sort_values(
+    "Importance"
+)
+
+plt.figure(figsize=(9, 7))
+
+plt.barh(
+    top_features["Feature"],
+    top_features["Importance"]
+)
+
+plt.xlabel("XGBoost Feature Importance")
+plt.ylabel("Feature")
+plt.title("Top 20 XGBoost Feature Importances")
+
+plt.tight_layout()
+plt.show()
+
+
+
