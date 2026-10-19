@@ -17,7 +17,8 @@
 | Priya Mehta      | @pmehta       | Model selection, hyperparameter tuning, model training and optimization  |
 | Chris Park       | @chrispark    | Model evaluation, performance analysis, results interpretation           |
 | Renee Ngai       | @reneengai126 | Model evaluation, performance analysis, model fine-tuning               |  
-| Bomi Shin       | @b2507s | Model evaluation, performance analysis, model fine-tuning               |     
+| Bomi Shin       | @b2507s | Model evaluation, performance analysis, model fine-tuning               |  
+| Eiliyah Sarowar       | @eilstars | Data cleaning, testing other models               |  
 
 ---
 
